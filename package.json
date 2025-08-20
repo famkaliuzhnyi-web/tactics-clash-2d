@@ -40,7 +40,7 @@
     "eslint-plugin-import": "^1.16.0",
     "eventsource-polyfill": "^0.9.6",
     "express": "^4.21.2",
-    "extract-text-webpack-plugin": "^1.0.1",
+    "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.9.0",
     "function-bind": "^1.1.2",
     "html-webpack-plugin": "^2.30.1",
@@ -63,7 +63,7 @@
     "opn": "^4.0.2",
     "ora": "^0.3.0",
     "phantomjs-prebuilt": "^2.1.16",
-    "sass-loader": "^4.1.1",
+    "sass-loader": "^6.0.7",
     "selenium-server": "2.53.1",
     "semver": "^5.7.2",
     "shelljs": "^0.8.5",
@@ -73,10 +73,10 @@
     "vue-loader": "^10.3.0",
     "vue-style-loader": "^1.0.0",
     "vue-template-compiler": "^2.7.16",
-    "webpack": "^1.15.0",
+    "webpack": "^2.7.0",
     "webpack-dev-middleware": "^1.12.2",
     "webpack-hot-middleware": "^2.26.1",
-    "webpack-merge": "^0.14.1"
+    "webpack-merge": "^4.2.2"
   },
   "engines": {
     "node": ">= 4.0.0",
