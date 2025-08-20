@@ -1,6 +1,7 @@
 var path        = require('path')
 var config      = require('../config')
 var utils       = require('./utils')
+var webpack     = require('webpack')
 var projectRoot = path.resolve(__dirname, '../')
 
 var env = process.env.NODE_ENV
@@ -20,10 +21,8 @@ module.exports = {
         filename   : '[name].js'
     },
     resolve       : {
-        extensions : ['', '.js', '.vue', '.scss'],
-        //modules    : [utils.root('src'), 'node_modules', 'app_modules'],
-        modulesDirectories: ['node_modules', 'app_modules'],
-        fallback   : [utils.root('node_modules')],
+        extensions : ['.js', '.vue', '.scss'],
+        modules: ['node_modules', 'app_modules', utils.root('src')],
         alias      : {
             'vue$'       : 'vue/dist/vue.common.js',
             'src'        : path.resolve(__dirname, '../src'),
@@ -32,67 +31,66 @@ module.exports = {
         }
     },
     resolveLoader : {
-        fallback : [path.join(__dirname, '../node_modules')]
+        modules : [path.join(__dirname, '../node_modules')]
     },
     module        : {
-        preLoaders : [
+        rules : [
             {
-                test    : /\.vue$/,
-                loader  : 'eslint',
+                test    : /\.(vue|js)$/,
+                loader  : 'eslint-loader',
+                enforce : 'pre',
                 include : projectRoot,
                 exclude : /node_modules/
             },
-            {
-                test    : /\.js$/,
-                loader  : 'eslint',
-                include : projectRoot,
-                exclude : /node_modules/
-            }
-        ],
-        loaders    : [
             {
                 test   : /\.vue$/,
-                loader : 'vue'
+                loader : 'vue-loader'
             },
             {
                 test    : /\.js$/,
-                loader  : 'babel',
+                loader  : 'babel-loader',
                 include : projectRoot,
                 exclude : /node_modules/
             },
             {
                 test   : /\.json$/,
-                loader : 'json'
+                loader : 'json-loader'
             },
             {
                 test   : /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-                loader : 'url',
-                query  : {
+                loader : 'url-loader',
+                options  : {
                     limit : 10000,
                     name  : utils.assetsPath('img/[name].[hash:7].[ext]')
                 }
             },
             {
                 test   : /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-                loader : 'url',
-                query  : {
+                loader : 'url-loader',
+                options  : {
                     limit : 10000,
                     name  : utils.assetsPath('fonts/[name].[hash:7].[ext]')
                 }
             }
         ]
     },
-    eslint        : {
-        formatter : require('eslint-friendly-formatter')
-    },
-    vue           : {
-        loaders : utils.cssLoaders({
-            sourceMap : useCssSourceMap
-        }),
-        postcss : [
-            require('autoprefixer')({
-                browsers : ['last 2 versions']
-            })
-        ]
-    }
+    plugins: [
+        new webpack.LoaderOptionsPlugin({
+            options: {
+                eslint: {
+                    formatter: require('eslint-friendly-formatter')
+                },
+                vue: {
+                    loaders: utils.cssLoaders({
+                        sourceMap: useCssSourceMap
+                    }),
+                    postcss: [
+                        require('autoprefixer')({
+                            browsers: ['last 2 versions']
+                        })
+                    ]
+                }
+            }
+        })
+    ]
 }
