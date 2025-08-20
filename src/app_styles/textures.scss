@@ -1,0 +1,228 @@
+@import "game";
+
+@mixin cell-level {
+  position: relative;
+  width:$size-cell; height: $size-cell;
+  display: inline-block;
+
+  .bg {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+
+    &.cls-wall_wood,
+    &.cls-wall_stone,
+    &.cls-wall_brick {
+      box-shadow: 0 0 10px rgba(0,0,0,1);
+      z-index: 1;
+    }
+
+    &.cls-roof_metal {
+      box-shadow: 0 0 32px rgba(255,255,255,0.5);
+      z-index: 1;
+    }
+  }
+
+  .level {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+
+    &-1 {
+      opacity: 0.9;
+    }
+    &-2 {
+      opacity: 0.95;
+    }
+    &-4 {
+      opacity: 1;
+      z-index: 10;
+    }
+    &-5 {
+      opacity: 0.5;
+      z-index: 11;
+    }
+  }
+}
+
+@mixin destruction($prefix) {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-image: url($prefix + 'assets/destruction-map.png');
+  z-index: 90;
+
+  &-0 {
+    background-position: 1 * $size-cell 0;
+  }
+  &-1 {
+    background-position: 2 * $size-cell 0;
+  }
+  &-2 {
+    background-position: 3 * $size-cell 0;
+  }
+  &-3 {
+    background-position: 4 * $size-cell 0;
+  }
+  &-4 {
+    background-position: 5 * $size-cell 0;
+  }
+  &-5 {
+    background-position: 6 * $size-cell 0;
+  }
+  &-6 {
+    background-position: 7 * $size-cell 0;
+  }
+  &-7 {
+    background-position: 8 * $size-cell 0;
+  }
+  &-8 {
+    background-position: 9 * $size-cell 0;
+  }
+  &-9 {
+    background-position: 10 * $size-cell 0;
+  }
+  &-10, &-NaN {
+    background: transparent;
+  }
+}
+
+@mixin texture($prefix) {
+
+  // Marker
+  &-team_start {
+    &_red {
+      border: 2px solid rgba(255,0,0,.5);
+      border-radius: 100px;
+    }
+    &_blue {
+      border: 2px solid rgba(0,0,255,.5);
+      border-radius: 100px;
+    }
+  }
+
+  // Floor
+  &-dirt {
+    background: url($prefix + 'assets/batch-1.png') 0 * $size-cell 12 * $size-cell;
+  }
+  &-water {
+    background: url($prefix + 'assets/batch-1.png') 3 * $size-cell 24 * $size-cell;
+  }
+  &-water_2 {
+    background: url($prefix + 'assets/batch-1.png') 19 * $size-cell 13 * $size-cell;
+  }
+  &-sand {
+    background: url($prefix + 'assets/batch-2.png') 21 * $size-cell 17 * $size-cell;
+  }
+  &-grass {
+    background: url($prefix + 'assets/batch-1.png') 12 * $size-cell 28 * $size-cell;
+  }
+  &-stone {
+    background: url($prefix + 'assets/batch-2.png') 22 * $size-cell 1 * $size-cell;
+  }
+  &-wood {
+    background: url($prefix + 'assets/batch-3.png') 15 * $size-cell 9 * $size-cell;
+  }
+  &-wood_2 {
+    background: url($prefix + 'assets/batch-4.png') 28 * $size-cell 13 * $size-cell;
+  }
+  &-wood_3 {
+    background: url($prefix + 'assets/batch-4.png') 27 * $size-cell 13 * $size-cell;
+  }
+
+  // Wall
+  &-wall_wood {
+    background: url($prefix + 'assets/batch-1.png') 28 * $size-cell 22 * $size-cell;
+  }
+  &-wall_wood_2 {
+    background: url($prefix + 'assets/batch-4.png') 27 * $size-cell 13 * $size-cell;
+  }
+  &-wall_stone {
+    background: url($prefix + 'assets/batch-1.png') 18 * $size-cell 17 * $size-cell;
+  }
+  &-wall_brick {
+    background: url($prefix + 'assets/batch-2.png') 25 * $size-cell 5 * $size-cell;
+  }
+  &-wall_glass {
+    background: url($prefix + 'assets/batch-1.png') 6 * $size-cell 8 * $size-cell;
+  }
+
+  // Roof
+  &-roof_metal {
+    background: url($prefix + 'assets/batch-4.png') 10 * $size-cell 30 * $size-cell;
+  }
+
+  // Actor
+  &-actor_solider_pistol {
+    background: url($prefix + 'assets/actor_pistol_0.png') 50% 50%;
+    background-size: 42px 36px;
+  }
+  &-actor_solider_rifle {
+    background: url($prefix + 'assets/actor_rifle_0.png') 82% 50%;
+    background-size: 55px 36px;
+  }
+  &-actor_solider_sniper {
+    background: url($prefix + 'assets/actor_sniper_0.png') 82% 50%;
+    background-size: 55px 36px;
+  }
+
+  // Door
+  &-door_wood {
+    background: url($prefix + 'assets/batch-1.png') 22 * $size-cell 1 * $size-cell;
+  }
+
+  // Asset
+  &-barrel {
+    background: url($prefix + 'assets/batch-2.png') 3 * $size-cell 29 * $size-cell;
+  }
+  &-logs {
+    background: url($prefix + 'assets/batch-4.png') 17 * $size-cell 14 * $size-cell;
+  }
+  &-bin_closed {
+    background: url($prefix + 'assets/batch-1.png') 4 * $size-cell 3 * $size-cell;
+  }
+  &-bin_opened {
+    background: url($prefix + 'assets/batch-2.png') 4 * $size-cell 30 * $size-cell;
+  }
+  &-box_wood {
+    background: url($prefix + 'assets/batch-2.png') 3 * $size-cell 28 * $size-cell;
+  }
+  &-box_wood_2 {
+    background: url($prefix + 'assets/batch-2.png') 17 * $size-cell 10 * $size-cell;
+  }
+  &-asset_stone_1 {
+    background: url($prefix + 'assets/batch-2.png') 25 * $size-cell 19 * $size-cell;
+  }
+
+  // Decor
+  &-grave_1 {
+    background: url($prefix + 'assets/batch-3.png') 18 * $size-cell 25 * $size-cell;
+  }
+  &-carpet_1 {
+    background: url($prefix + 'assets/batch-4.png') 8 * $size-cell 14 * $size-cell;
+  }
+  &-grass_1 {
+    background: url($prefix + 'assets/batch-2.png') 18 * $size-cell 26 * $size-cell;
+  }
+  &-grass_2 {
+    background: url($prefix + 'assets/batch-2.png') 17 * $size-cell 26 * $size-cell;
+  }
+  &-grass_3 {
+    background: url($prefix + 'assets/batch-2.png') 18 * $size-cell 25 * $size-cell;
+  }
+  &-grass_4 {
+    background: url($prefix + 'assets/batch-2.png') 17 * $size-cell 25 * $size-cell;
+  }
+  &-grass_5 {
+    background: url($prefix + 'assets/batch-1.png') 17 * $size-cell 27 * $size-cell;
+  }
+  &-grass_6 {
+    background: url($prefix + 'assets/batch-1.png') 16 * $size-cell 27 * $size-cell;
+  }
+  &-stone_1 {
+    background: url($prefix + 'assets/batch-2.png') 24 * $size-cell 20 * $size-cell;
+  }
+  &-stone_2 {
+    background: url($prefix + 'assets/batch-2.png') 23 * $size-cell 20 * $size-cell;
+  }
+  &-log_1 {
+    background: url($prefix + 'assets/batch-2.png') 28 * $size-cell 28 * $size-cell;
+  }
+}

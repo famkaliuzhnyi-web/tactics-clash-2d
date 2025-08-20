@@ -1,0 +1,39 @@
+@import "globals";
+
+$editor-toolset-width: 40px;
+$editor-resources-width: 320px;
+
+.scene-editor {
+  position: relative;
+
+  .editor-layout {
+    position: relative;
+
+    .block {
+      &-editor {
+        margin: 0 $editor-resources-width 0 $editor-toolset-width;
+        overflow: auto;
+      }
+      &-toolset,
+      &-resources {
+        position: absolute;
+        top: 0; bottom: 0;
+        background-color: $grey-2;
+      }
+      &-toolset {
+        left: 0;
+        width: $editor-toolset-width;
+      }
+      &-resources {
+        right: 0;
+        width: $editor-resources-width;
+      }
+    }
+  }
+
+  .field {
+    display: block;
+    font-size: 0;
+    cursor: crosshair;
+  }
+}

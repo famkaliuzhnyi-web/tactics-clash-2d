@@ -1,0 +1,10 @@
+@import "game";
+@import "textures";
+
+.cell {
+  @include cell-level();
+
+  .texture {
+    @include texture('../../../../');
+  }
+}

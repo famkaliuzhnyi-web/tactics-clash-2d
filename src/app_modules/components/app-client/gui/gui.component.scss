@@ -1,0 +1,40 @@
+@import "globals";
+
+.gui {
+  font-size: 12px;
+  line-height: 12px;
+
+  > .block {
+    position: absolute;
+    padding: 20px;
+    color: #fff;
+    z-index: 10;
+
+    &-health {
+      bottom: 0;
+      left: 0;
+    }
+
+    &-ammo {
+      right: 0;
+      bottom: 0;
+    }
+
+  }
+
+  .bg {
+    padding: 5px;
+    background-color: rgba($grey-7, .5);
+  }
+
+  .bar {
+    width: 200px;
+    height: 10px;
+    border-top: 1px solid #fff;
+
+    > div {
+      height: 8px;
+      background-color: #fff;
+    }
+  }
+}

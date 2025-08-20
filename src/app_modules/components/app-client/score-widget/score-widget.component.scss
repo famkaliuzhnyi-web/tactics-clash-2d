@@ -1,0 +1,56 @@
+@import "globals";
+
+.score-widget {
+
+  .score-head {
+    margin-bottom: 10px;
+    padding: 10px 0;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: bold;
+
+    &.color-red {
+      border-bottom: 2px solid $red-1;
+    }
+    &.color-blue {
+      border-bottom: 2px solid $blue-1;
+    }
+  }
+
+  .score-body {
+    font-size: 16px;
+    &:after {
+      content: '';
+      display: table;
+      clear: both;
+
+    }
+
+    .score-team {
+      width: 50%;
+      float: left;
+      border: 1px solid $grey-3;
+
+      &:first-child {
+        border-right: none;
+      }
+
+      li {
+        display: block;
+        padding: 5px 10px;
+
+        > span {
+          display: block;
+          margin-right: 40px;
+          \overflow: hidden;
+        }
+
+        > strong {
+          width: 40px;
+          float: right;
+          text-align: right;
+        }
+      }
+    }
+  }
+}

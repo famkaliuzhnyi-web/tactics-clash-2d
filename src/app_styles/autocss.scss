@@ -1,0 +1,125 @@
+@import "colors";
+
+@mixin autocss() {
+  padding: 20px;
+  line-height: 20px;
+
+  input, button {
+    line-height: 20px;
+  }
+
+  > * {
+    margin-bottom: 20px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  h1 {
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 2px solid $grey-8;
+  }
+
+  .info {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid $grey-3;
+  }
+
+  label {
+    display: block;
+    margin: 10px 0;
+    border-bottom: 1px solid $grey-2;
+
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    & + button {
+      margin-top: 20px;
+    }
+
+    > span {
+      display: block;
+      float: left;
+      min-width: 130px;
+      &:after {
+        content: ':';
+        margin: 0 4px;
+      }
+    }
+
+    input, button {
+      margin-bottom: -1px;
+      padding: 0 4px;
+      background-color: $grey-2;
+      border: none;
+      border-bottom: 1px solid $grey-9;
+    }
+
+    button {
+      background-color: $grey-7;
+      color: #fff;
+      cursor: pointer;
+      font-size: 12px;
+
+      &:hover, &.active {
+        background-color: $grey-8;
+      }
+    }
+
+    ul.select {
+      display: block;
+      float: left;
+      cursor: pointer;
+
+      li {
+        display: block;
+        padding: 0 8px 0 0;
+
+        &:before {
+          content: ' ';
+          display: inline-block;
+          width: 8px; height: 8px;
+          margin: 6px 8px 0 0;
+          background-color: $grey-3;
+          font-size: 0;
+        }
+
+        &:hover:before {
+          background-color: $grey-7;
+        }
+        &.active:before {
+          background-color: $green-1;
+        }
+      }
+    }
+  }
+
+  button {
+    padding: 10px 20px;
+    background: $grey-8;
+    color: #fff;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 14px;
+
+    &:hover, &.active {
+      background-color: $grey-9;
+      cursor: pointer;
+    }
+  }
+}

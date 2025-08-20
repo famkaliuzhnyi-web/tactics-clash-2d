@@ -1,0 +1,35 @@
+@import "game";
+
+.texture-helper {
+  display: inline-block;
+
+  .content {
+    position: relative;
+    border: 1px solid #000;
+  }
+
+  .table {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    .td {
+      width: $size-cell;
+      height: $size-cell;
+      float: left;
+      box-sizing: border-box;
+      border-style: solid;
+      border-color: #fff;
+      border-width: 1px 0 0 1px;
+      font-size: 0;
+      color: #fff;
+      text-shadow: 0 0 2px #000;
+
+      &:hover {
+        font-size: 12px;
+      }
+    }
+  }
+}

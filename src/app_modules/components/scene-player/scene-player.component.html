@@ -1,0 +1,24 @@
+<div class="scene-player autocss" v-if="levelRef">
+    <h1>Scene Demo</h1>
+    <input class="focusInput" type="text"
+           @keydown.stop.prevent.87="handleWDown"
+           @keyup.stop.prevent.87="handleWUp"
+           @keydown.stop.prevent.68="handleDDown"
+           @keyup.stop.prevent.68="handleDUp"
+           @keydown.stop.prevent.65="handleADown"
+           @keyup.stop.prevent.65="handleAUp"
+           @keydown.stop.prevent.83="handleSDown"
+           @keyup.stop.prevent.83="handleSUp"
+           @keydown.stop.prevent.16="handleShiftDown"
+           @keyup.stop.prevent.16="handleShiftUp"
+           @keydown.stop.prevent.69="handleActionFireStart"
+           @keyup.stop.prevent.69="handleActionFireStop"
+           @keydown.stop.prevent.82="handleActionReload"/>
+    <hr/>
+    <div class="scene-container">
+        <gamefield :levelRef="levelRef"
+                   @pointerupdate="handlePointer"
+                   @pointerrightdown="handleActionFireStart"
+                   @pointerrightup="handleActionFireStop"></gamefield>
+    </div>
+</div>

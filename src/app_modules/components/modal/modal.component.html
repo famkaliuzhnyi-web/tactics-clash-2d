@@ -1,0 +1,12 @@
+<div class="modal fullscreen">
+    <div class="wrapper">
+        <div class="card">
+            <div v-if="title" class="card-head">{{title}}</div>
+            <div class="card-body">
+                <div :class="css">
+                    <slot></slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

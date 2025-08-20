@@ -1,0 +1,11 @@
+<div class="texture-helper">
+    <h2>Texture helper {{texture}}</h2>
+    <div class="content">
+        <img class="texture" :src="texture"/>
+        <div class="table">
+            <div v-for="y in height">
+                <div v-for="x in width" class="td">{{width - x + 1}} {{height - y + 1}}</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="gui">
+    <div class="block block-health">
+        <div class="bg">hp: {{actor.health}}/{{actor.maxHealth}}</div>
+        <div class="bar"><div class="bar-content" :style="{width: actor.health / actor.maxHealth * 100 +'%'}"></div></div>
+    </div>
+    <div class="block block-ammo">
+        <div class="bg" v-if="!actor.weapon.isReloaded">Reloading!</div>
+        <div class="bg">ammo: {{actor.ammo}}/{{actor.maxAmmo}}</div>
+        <div class="bar"><div class="bar-content" :style="{width: actor.ammo / actor.maxAmmo * 100 +'%'}"></div></div>
+    </div>
+</div>

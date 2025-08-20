@@ -1,0 +1,6 @@
+<div class="cell" @mousedown.stop.prevent="handleClick" @contextmenu.stop.prevent>
+    <template v-for="(block, level) in blockList">
+        <div :class="formatBgCls(block, level)">{{level}}</div>
+        <div :class="formatCls(block, level)">{{level}}</div>
+    </template>
+</div>

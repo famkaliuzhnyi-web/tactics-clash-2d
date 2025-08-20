@@ -1,0 +1,23 @@
+<div id="app">
+    <div class="header">
+        <h1>vue test</h1>
+        <strong>Current mode: {{appMode}}</strong>
+        <button @click="appMode = modes[0]" :class="{active: appMode == modes[0]}">DEMO</button>
+        <button @click="appMode = modes[1]" :class="{active: appMode == modes[1]}">CLIENT</button>
+        <button @click="appMode = modes[2]" :class="{active: appMode == modes[2]}">SERVER</button>
+        <button @click="appMode = modes[3]" :class="{active: appMode == modes[3]}">EDITOR</button>
+    </div>
+    <hr />
+    <div v-if="appMode == modes[0]" class="mode mode-demo">
+        <scene-player :level-ref="levelRef"/>
+    </div>
+    <app-client v-if="appMode == modes[1]"></app-client>
+    <app-server v-if="appMode == modes[2]"></app-server>
+    <div v-if="appMode == modes[3]" class="mode editor">
+        <scene-editor />
+        <texture-helper :texture="'./static/img/batch-1.png'" :width="30" :height="30" />
+        <texture-helper :texture="'./static/img/batch-2.png'" :width="30" :height="30" />
+        <texture-helper :texture="'./static/img/batch-3.png'" :width="30" :height="30" />
+        <texture-helper :texture="'./static/img/batch-4.png'" :width="30" :height="30" />
+    </div>
+</div>

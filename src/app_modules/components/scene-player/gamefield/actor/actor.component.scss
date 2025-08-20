@@ -1,0 +1,22 @@
+@import "game";
+@import "textures";
+
+.actor {
+  position: absolute;
+  top: 0; left: 0;
+  width: $size-cell;
+  height: $size-cell;
+  border: 1px solid red;
+
+  .texture {
+    width: $size-cell;
+    height: $size-cell;
+    @include texture('../../../../../');
+
+    &.actor-mesh {
+      width: $size-cell + 10px;
+      height: $size-cell + 10px;
+      margin: -5px;
+    }
+  }
+}

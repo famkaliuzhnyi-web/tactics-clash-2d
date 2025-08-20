@@ -1,0 +1,106 @@
+<div class="app-client">
+
+    <div class="autocss">
+        <h1>Client</h1>
+    </div>
+
+
+    <modal v-if="controller.stage == 'connect'" title="Join Game" css="autocss">
+        <label>
+            <span>Connect to</span>
+            <input type="text" v-model="controller.serverKey" @keyup.enter="controller.connect"/>
+        </label>
+        <button @click="controller.connect()">Connect</button>
+    </modal>
+
+    <modal v-if="controller.stage == 'register'" title="Register Character" css="autocss">
+        <p>You successfully connected to server.</p>
+        <label>
+            <span>Select Nickname</span>
+            <input type="text" v-model="controller.playerName" @keyup.enter="controller.register"/>
+        </label>
+        <label>
+            <span>Select Team</span>
+            <ul class="select">
+                <li @click="controller.activeTeam = 'red'" :class="{active: controller.activeTeam == 'red'}">
+                    {{controller.levelParams.redTeamName}}
+                    ({{teamPlayersAmount('red')}})
+                </li>
+                <li @click="controller.activeTeam = 'blue'" :class="{active: controller.activeTeam == 'blue'}">
+                    {{controller.levelParams.blueTeamName}}
+                    ({{teamPlayersAmount('blue')}})
+                </li>
+            </ul>
+        </label>
+        <label>
+            <span>Select Weapon</span>
+            <ul class="select">
+                <li v-for="(isAvailable, key) in controller.availableWeapons" v-if="isAvailable"
+                    @click="controller.chosenWeapon = chosenWeapon = key"
+                    :class="{active: chosenWeapon === key}">{{weaponTypes[key].title}}
+                </li>
+            </ul>
+        </label>
+        <button @click="controller.register()">Register</button>
+    </modal>
+
+    <template v-if="controller.stage == 'play'">
+
+        <modal v-if="controller.gameSessionState === controller.gameSessionStates.lobby" css="autocss" title="Lobby">
+            <p>Waiting for other players to join</p>
+            <label>
+                <span>Player name</span>
+                <strong>{{controller.playerName}}</strong>
+            </label>
+            <label>
+                <span>Server ID</span>
+                <strong>{{controller.serverId}}</strong>
+            </label>
+        </modal>
+
+        <template v-if="controller.gameSessionState === controller.gameSessionStates.play">
+
+            <div v-if="controller.levelRef" class="gui-related">
+                <gui :actor="controller.controllableActor" />
+                <input class="focusInput" type="text"
+                       @keydown.stop.prevent.87="handleWDown"
+                       @keyup.stop.prevent.87="handleWUp"
+                       @keydown.stop.prevent.68="handleDDown"
+                       @keyup.stop.prevent.68="handleDUp"
+                       @keydown.stop.prevent.65="handleADown"
+                       @keyup.stop.prevent.65="handleAUp"
+                       @keydown.stop.prevent.83="handleSDown"
+                       @keyup.stop.prevent.83="handleSUp"
+                       @keydown.stop.prevent.16="handleShiftDown"
+                       @keyup.stop.prevent.16="handleShiftUp"
+                       @keydown.stop.prevent.69="handleActionFireStart"
+                       @keyup.stop.prevent.69="handleActionFireStop"
+                       @keydown.stop.prevent.82="handleActionReload"/>
+                <hr/>
+                <clientgamefield :controller="controller"
+                                 @pointerupdate="handlePointer"
+                                 @pointerrightdown="handleActionFireStart"
+                                 @pointerrightup="handleActionFireStop"/>
+            </div>
+
+            <div class="autocss">
+                <div class="info">
+                    <label>
+                        <span>Player name</span>
+                        <strong>{{controller.playerName}}</strong>
+                    </label>
+                    <label>
+                        <span>Server ID</span>
+                        <strong>{{controller.serverId}}</strong>
+                    </label>
+                </div>
+            </div>
+        </template>
+
+        <modal v-if="controller.gameSessionState === controller.gameSessionStates.finish" title="Level Clear!">
+            <scorewidget :controller="controller" />
+        </modal>
+
+    </template>
+
+</div>

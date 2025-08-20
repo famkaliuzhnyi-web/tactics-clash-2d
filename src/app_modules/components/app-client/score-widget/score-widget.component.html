@@ -1,0 +1,14 @@
+<div class="score-widget" v-if="controller.winTeam">
+    <div :class="'score-head color-'+controller.winTeam">{{getTeamName(controller.winTeam)}} win!</div>
+
+    <div class="score-body">
+        <div class="score-team" v-for="(team, teamName) in teams">
+            <ul>
+                <li v-for="player in team">
+                    <strong>{{player.score}}</strong>
+                    <span>{{player.name}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

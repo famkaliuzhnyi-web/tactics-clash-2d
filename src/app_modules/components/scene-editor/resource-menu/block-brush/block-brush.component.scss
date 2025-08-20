@@ -1,0 +1,12 @@
+@import "game";
+@import "textures";
+
+.resource-menu-block-brush {
+  display: inline-block;
+
+  .texture {
+    width: $size-cell;
+    height: $size-cell;
+    @include texture('../../../../../');
+  }
+}

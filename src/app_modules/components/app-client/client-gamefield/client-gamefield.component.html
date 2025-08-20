@@ -1,0 +1,23 @@
+<div class="client-gamefield" v-if="controller && controller.levelRef" :style="{backgroundColor: controller.levelRef.ambient,
+width: controller.levelRef.width * 32 + 'px',
+height: controller.levelRef.height * 32 + 'px'}">
+    <div class="calcFrom">
+        <template v-for="(row, y) in controller.levelRef.schema">
+            <clientcell v-for="(col, x) in row" :blockList="col" :x="x" :y="y"/>
+        </template>
+    </div>
+    <div class="calcFrom">
+        <clientactor v-for="actor in controller.levelRef.actors" :actor="actor" />
+    </div>
+    <div class="calcFrom" :style="{display: controller.levelRef.shouldRenderProjectiles && 'block' || 'none'}">
+        <clientprojectile v-for="projectile in controller.levelRef.projectiles" :projectile="projectile" />
+    </div>
+    <div class="overlay"
+         @contextmenu.stop.prevent
+         @mousemove="handleMouseMove"
+         @dragstart.stop.prevent
+         @click.stop.prevent
+         @mousemove.stop.prevent
+         @mousedown.stop.prevent="handleMouseDown"
+         @mouseup.stop.prevent="handleMouseUp"></div>
+</div>

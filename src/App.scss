@@ -1,0 +1,68 @@
+@import "globals";
+@import "autocss";
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+div, a, input, button, textarea {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: arial, sans-serif;
+  font-size: 14px;
+  background-color: $grey-1;
+}
+
+h1, h2 {
+  font-size: 20px;
+}
+
+input, button {
+  outline: none;
+  font-family: arial, sans-serif;
+}
+
+#app > .header {
+  position: relative;
+  height: 40px;
+  background-color: $grey-8;
+  color: #fff;
+  font-size: 0;
+  z-index: 300;
+
+  > h1 {
+    float: left;
+    line-height: 20px;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-size: 20px;
+  }
+  > strong {
+    display: block;
+    float: left;
+    line-height: 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  > button {
+    padding: 10px 20px;
+    line-height: 20px;
+    background: none;
+    border: none;
+    border-left: 1px solid $grey-9;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover, &.active {
+      background-color: $grey-9;
+    }
+  }
+}
+
+.autocss {
+  @include autocss();
+}

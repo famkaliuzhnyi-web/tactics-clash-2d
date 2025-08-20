@@ -1,0 +1,39 @@
+@import "globals";
+@import "game";
+@import "textures";
+
+.client-actor {
+  position: absolute;
+  top: 0; left: 0;
+  width: $size-cell;
+  height: $size-cell;
+
+  .texture {
+    width: $size-cell;
+    height: $size-cell;
+    @include texture('../../../../../');
+
+    &.actor-mesh {
+      width: $size-cell + 10px;
+      height: $size-cell + 10px;
+      margin: -5px;
+    }
+  }
+
+  .name {
+    position: absolute;
+    top: -20px; right: -5px; left: -5px;
+    margin: auto;
+    padding: 2px;
+    font-size: 11px;
+    text-align: center;
+    color: #fff;
+    background-color: rgba(0,0,0,.5);
+    z-index: 100;
+    overflow: hidden;
+
+    &.dead {
+      background-color: rgba($red-1, 0.6);
+    }
+  }
+}

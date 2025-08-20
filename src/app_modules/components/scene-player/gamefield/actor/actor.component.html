@@ -1,0 +1,5 @@
+<div class="actor" :style="{transform:'translate('+actor.x+'px, '+actor.y+'px)'}">
+    <div v-if="actor.isDead" class="texture texture-grave_1"></div>
+    <div v-else :class="'actor-mesh texture texture-'+actor.weapon.model.blockType.texture"
+    :style="{transform:'rotate('+actor.rotation+'rad)'}"></div>
+</div>

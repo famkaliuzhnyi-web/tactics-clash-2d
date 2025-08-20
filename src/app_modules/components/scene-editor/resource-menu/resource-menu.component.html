@@ -1,0 +1,28 @@
+<div class="resources">
+    <div class="tabs">
+        <button @click="tab = 0" :class="{active: tab === 0}">Floor</button>
+        <button @click="tab = 1" :class="{active: tab === 1}">Wall</button>
+        <button @click="tab = 2" :class="{active: tab === 2}">Roof</button>
+        <button @click="tab = 3" :class="{active: tab === 3}">Asset</button>
+        <button @click="tab = 4" :class="{active: tab === 4}">Decor</button>
+        <button @click="tab = 5" :class="{active: tab === 5}">Other</button>
+    </div>
+    <div class="content" v-if="tab === 0">
+        <block-brush v-for="blockType in blockTypes_floor" :blockType="blockType" @clicked="$emit('brushselected', blockType)" />
+    </div>
+    <div class="content" v-if="tab === 1">
+        <block-brush v-for="blockType in blockTypes_wall" :blockType="blockType" @clicked="$emit('brushselected', blockType)" />
+    </div>
+    <div class="content" v-if="tab === 2">
+        <block-brush v-for="blockType in blockTypes_roof" :blockType="blockType" @clicked="$emit('brushselected', blockType)" />
+    </div>
+    <div class="content" v-if="tab === 3">
+        <block-brush v-for="blockType in blockTypes_asset" :blockType="blockType" @clicked="$emit('brushselected', blockType)" />
+    </div>
+    <div class="content" v-if="tab === 4">
+        <block-brush v-for="blockType in blockTypes_decor" :blockType="blockType" @clicked="$emit('brushselected', blockType)" />
+    </div>
+    <div class="content" v-if="tab === 5">
+        <block-brush v-for="blockType in blockTypes_other" :blockType="blockType" @clicked="$emit('brushselected', blockType)" />
+    </div>
+</div>

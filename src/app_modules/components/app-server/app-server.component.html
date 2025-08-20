@@ -1,0 +1,77 @@
+<div class="app-server">
+
+    <div class="autocss">
+        <h1>Server</h1>
+    </div>
+
+    <modal v-if="controller.stage == 'configure'" title="Create Game" css="autocss configure">
+        <label>
+            <span>Name <strong class="red">RED</strong> team</span>
+            <input type="text" v-model="redTeamName" />
+        </label>
+        <label>
+            <span>Name <strong class="blue">BLUE</strong> team</span>
+            <input type="text" v-model="blueTeamName" />
+        </label>
+        <label>
+            <span>Max players</span>
+            <input type="number" v-model="maxPlayers" />
+        </label>
+        <label>
+            <span>Select map</span>
+            <ul class="select">
+                <li v-for="(map, key) in maps" @click="selectMap(key)"
+                    :class="{active: controller.selectedMap == key}">{{key}}
+                </li>
+            </ul>
+        </label>
+        <label>
+            <span>Available weapon</span>
+            <ul class="select">
+                <li v-for="(isAvailable, key) in controller.availableWeapons"
+                    @click="controller.availableWeapons[key] = !isAvailable"
+                    :class="{active: isAvailable}">{{weaponTypes[key].title}}
+                </li>
+            </ul>
+        </label>
+        <button @click="checkConfiguration">Create</button>
+    </modal>
+
+    <div v-else class="autocss">
+        <div class="info">
+            <label>
+                <span>Connect to</span>
+                <strong> {{controller.publicKey}}</strong>
+            </label>
+            <label>
+                <span>Controlls</span>
+                <button @click="resetLevel">Reset level</button>
+            </label>
+        </div>
+        <div class="connections" v-if="controller.server">
+            <table class="active-connections">
+                <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>Actions</td>
+                    <td>Name</td>
+                    <td>connected</td>
+                    <td>registered</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="connRef in controller.server.connections">
+                    <td>{{connRef.id}}</td>
+                    <td>
+                        <button>kick</button>
+                    </td>
+                    <td>{{connRef.name}}</td>
+                    <td>{{connRef.connectedAt}}</td>
+                    <td>{{connRef.registeredAt}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

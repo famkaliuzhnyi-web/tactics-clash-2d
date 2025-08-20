@@ -1,0 +1,7 @@
+<div class="cell" :style="{transform:'translate('+x*32+'px, '+y*32+'px)'}">
+    <template v-for="(block, level) in blockList">
+        <div :class="formatBgCls(block, level)">{{level}}</div>
+        <div :class="formatCls(block, level)">{{level}}</div>
+        <div :class="damageCls(block)">{{level}}</div>
+    </template>
+</div>
