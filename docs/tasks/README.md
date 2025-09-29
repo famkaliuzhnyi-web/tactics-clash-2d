@@ -5,7 +5,7 @@ This directory contains detailed implementation tasks and development guides for
 ## Available Tasks
 
 ### [Task 01: AI Bots Implementation](./01-ai-bots.md)
-Comprehensive guide for implementing AI-controlled bots with Counter-Strike inspired gameplay mechanics. Includes system architecture, technical requirements, implementation phases, and integration strategies.
+Comprehensive guide for implementing AI-controlled bots with competitive multiplayer shooter inspired gameplay mechanics. Includes system architecture, technical requirements, implementation phases, and integration strategies.
 
 ## Task Structure
 

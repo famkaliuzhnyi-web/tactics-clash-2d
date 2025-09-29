@@ -2,11 +2,11 @@
 
 ## Overview
 
-Implement AI-controlled bots for Tactics Clash 2D, taking inspiration from Counter-Strike gameplay mechanics. These bots will provide challenging opponents for players and fill empty slots in multiplayer matches.
+Implement AI-controlled bots for Tactics Clash 2D, taking inspiration from competitive multiplayer shooter gameplay mechanics. These bots will provide challenging opponents for players and fill empty slots in multiplayer matches.
 
-## Inspiration from Counter-Strike
+## Inspiration from Competitive Multiplayer Shooters
 
-The AI bot system draws heavily from Counter-Strike's bot behavior and gameplay patterns:
+The AI bot system draws heavily from modern competitive multiplayer shooter bot behavior and gameplay patterns:
 
 ### Core Bot Personalities
 - **Aggressive**: Rush tactics, prefer close-quarters combat
@@ -46,7 +46,7 @@ BotManager
 - **A* Pathfinding**: Navigate around obstacles and destructible terrain
 - **Dynamic Path Updates**: Adapt to environment changes during gameplay
 - **Movement Prediction**: Anticipate player movements for interception
-- **Strafe Patterns**: Counter-Strike inspired movement during combat
+- **Strafe Patterns**: Competitive shooter inspired movement during combat
 
 #### 3. Combat Behavior
 - **Weapon Selection**: Choose appropriate weapons for different situations
@@ -175,7 +175,7 @@ const botConfig = {
 
 ## References
 
-- Counter-Strike bot behavior analysis
+- Competitive multiplayer shooter bot behavior analysis
 - Real-time strategy AI patterns
 - 2D pathfinding algorithms
 - Multiplayer game AI architectures
