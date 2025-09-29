@@ -5,6 +5,7 @@ import { Actor } from '../models/actor.model';
 import { Weapon } from '../models/weapon.model';
 import { GameController } from './game.controller';
 import { GameSessionController } from './game-session.controller';
+import { BotManager } from './bot-manager.controller';
 const server      = require('../services/server.connection.service');
 const maps        = require('../../instances/map');
 const actorTypes  = require('../../instances/actor-type');
@@ -33,18 +34,23 @@ export class ServerController {
         red  : [],
         blue : []
     };
+    botManager;
 
     constructor() {
         this.server            = server;
         this.server.controller = this;
         this.publicKey         = server.peer.id;
         this.game              = new GameController();
+        this.botManager        = new BotManager(this);
     }
 
     destroy() {
         if ( this.levelRef ) {
             this.levelRef.logic.stop();
             this.levelRef.logic.doOnTick = [];
+        }
+        if ( this.botManager ) {
+            this.botManager.disable();
         }
     }
 
@@ -100,6 +106,14 @@ export class ServerController {
         };
         this.levelRef.start();
 
+        // Enable and spawn bots after level is ready
+        this.botManager.enable();
+        
+        // Add some test bots for demonstration
+        this.addTestBots();
+        
+        this.botManager.spawnAllBots();
+
         this.stage = this.stages[1];
     }
 
@@ -121,6 +135,9 @@ export class ServerController {
                 this.levelRef.spawnTeamActor(connRef.actor, connRef.team);
             }
         });
+        
+        // Respawn bots after reset
+        this.botManager.spawnAllBots();
     }
 
     spawnActor(connRef) {
@@ -151,10 +168,19 @@ export class ServerController {
 
     _formatGameState(state) {
         let actors = {};
+        
+        // Add human players
         Object.keys(this.server.connections).forEach(id => {
             let connRef = this.server.connections[id];
             if ( connRef.actor ) {
                 actors[id] = connRef.actor.getSerializable();
+            }
+        });
+        
+        // Add bots
+        this.botManager.bots.forEach(bot => {
+            if (bot.actor) {
+                actors[bot.id] = bot.actor.getSerializable();
             }
         });
 
@@ -187,6 +213,32 @@ export class ServerController {
                 }
             }
         });
+        
+        // Send bot information to clients
+        this.botManager.bots.forEach(bot => {
+            connRef.send({
+                action : 'playerConnected',
+                data   : {
+                    id   : bot.id,
+                    name : bot.name,
+                    isBot: true
+                }
+            });
+            if ( bot.actor ) {
+                connRef.send({
+                    action : 'spawnActor',
+                    data   : {
+                        id        : bot.id,
+                        x         : bot.actor.x,
+                        y         : bot.actor.y,
+                        team      : bot.team,
+                        weaponKey : bot.weaponType,
+                        actorKey  : bot.actorType,
+                        isBot     : true
+                    }
+                });
+            }
+        });
 
         return {
             levelParams      : this.levelParams,
@@ -200,6 +252,11 @@ export class ServerController {
     }
 
     handleTick() {
+        // Update bots
+        if (this.botManager) {
+            this.botManager.update(Date.now());
+        }
+        
         this.server.send({
             action : 'tickUpdate',
             data   : this.formatGameUpdate()
@@ -266,5 +323,26 @@ export class ServerController {
         });
 
         Vue.delete(this.server.connections, id);
+    }
+
+    // Bot management methods
+    addTestBots() {
+        // Add a couple of test bots to each team for demonstration
+        this.botManager.addBot('red', 'intermediate', 'tactical');
+        this.botManager.addBot('red', 'novice', 'aggressive');
+        this.botManager.addBot('blue', 'intermediate', 'defensive');
+        this.botManager.addBot('blue', 'expert', 'sniper');
+    }
+
+    addBot(team, difficulty = 'intermediate', personality = null, weaponType = null) {
+        return this.botManager.addBot(team, difficulty, personality, weaponType);
+    }
+
+    removeBot(botId) {
+        return this.botManager.removeBot(botId);
+    }
+
+    getBotStats() {
+        return this.botManager.getBotStats();
     }
 }
