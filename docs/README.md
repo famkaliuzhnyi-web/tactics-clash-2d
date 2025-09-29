@@ -10,6 +10,7 @@ This directory contains comprehensive documentation for the Tactics Clash 2D mul
 - [Real-time Synchronization](./realtime-synchronization.md) - Game state synchronization mechanisms
 - [Client-Server Communication](./client-server-communication.md) - Message protocol and data flow
 - [Game Engine](./game-engine.md) - Core game loop and mechanics
+- [Tasks](./tasks/) - Development tasks and implementation guides
 
 ## Quick Start
 
