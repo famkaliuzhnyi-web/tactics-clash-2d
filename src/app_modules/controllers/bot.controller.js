@@ -17,6 +17,16 @@ export class BotController {
     engageStartTime = 0;
     lastKnownTargetPosition = null;
     searchTimer = 0;
+    
+    // Performance and adaptive behavior
+    killCount = 0;
+    deathCount = 0;
+    damageDealt = 0;
+    accuracyHistory = [];
+    
+    // State transition cooldowns to prevent rapid state switching
+    stateTransitionCooldown = 0;
+    lastStateChange = 0;
 
     constructor(config = {}) {
         // Apply configuration
@@ -140,8 +150,28 @@ export class BotController {
     }
 
     setState(newState) {
+        // Prevent rapid state switching with cooldown
+        const now = Date.now();
+        if (now - this.lastStateChange < this.stateTransitionCooldown) {
+            return;
+        }
+        
         this.state = newState;
         this.searchTimer = 0;
+        this.lastStateChange = now;
+        
+        // Set appropriate cooldown based on state transition
+        switch (newState) {
+            case 'engage':
+                this.stateTransitionCooldown = 500; // 0.5s cooldown
+                break;
+            case 'search':
+                this.stateTransitionCooldown = 1000; // 1s cooldown
+                break;
+            default:
+                this.stateTransitionCooldown = 200; // 0.2s cooldown
+                break;
+        }
         
         // Clear movement controls when changing states
         this.clearMovementControls();
@@ -298,7 +328,21 @@ export class BotController {
             return;
         }
 
+        // Track firing for accuracy statistics
+        const shotFired = !this.actor.controller.isFiring;
         this.actor.controller.isFiring = true;
+        
+        if (shotFired) {
+            // Simple accuracy tracking - this could be enhanced with actual hit detection
+            const distance = this.distanceTo(target);
+            const expectedAccuracy = Math.max(0.1, this.accuracy - (distance / 1000));
+            const hitProbability = Math.random() < expectedAccuracy ? 1 : 0;
+            
+            this.accuracyHistory.push(hitProbability);
+            if (this.accuracyHistory.length > 20) {
+                this.accuracyHistory.shift(); // Keep only last 20 shots
+            }
+        }
     }
 
     updateTacticalMovement() {
@@ -550,5 +594,61 @@ export class BotController {
         const dx = target.x - this.actor.x;
         const dy = target.y - this.actor.y;
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    // Performance and statistics methods
+    getPerformanceStats() {
+        const currentAccuracy = this.accuracyHistory.length > 0 
+            ? this.accuracyHistory.reduce((a, b) => a + b, 0) / this.accuracyHistory.length 
+            : 0;
+            
+        return {
+            killCount: this.killCount,
+            deathCount: this.deathCount,
+            damageDealt: this.damageDealt,
+            currentAccuracy: currentAccuracy,
+            state: this.state,
+            personality: this.personality,
+            difficulty: this.getDifficultyLevel()
+        };
+    }
+
+    getDifficultyLevel() {
+        if (this.accuracy >= 0.9) return 'elite';
+        if (this.accuracy >= 0.75) return 'expert';
+        if (this.accuracy >= 0.5) return 'intermediate';
+        return 'novice';
+    }
+
+    // Event handlers for performance tracking
+    onKill() {
+        this.killCount++;
+    }
+
+    onDeath() {
+        this.deathCount++;
+        // Reset to idle state on death
+        this.setState('idle');
+        this.target = null;
+        this.lastKnownTargetPosition = null;
+    }
+
+    onDamageDealt(amount) {
+        this.damageDealt += amount;
+    }
+
+    // Adaptive behavior based on performance
+    adaptBehavior() {
+        const stats = this.getPerformanceStats();
+        
+        // If accuracy is consistently low, reduce aggression slightly
+        if (stats.currentAccuracy < 0.3 && this.aggression > 0.3) {
+            this.aggression = Math.max(0.1, this.aggression - 0.1);
+        }
+        
+        // If performing well, increase aggression slightly
+        if (stats.currentAccuracy > 0.8 && this.aggression < 0.9) {
+            this.aggression = Math.min(1.0, this.aggression + 0.05);
+        }
     }
 }

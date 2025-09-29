@@ -11,6 +11,14 @@ export class BotManager {
     serverController = null;
     isEnabled = false;
     
+    // Performance monitoring
+    performanceStats = {
+        totalUpdates: 0,
+        updateTime: 0,
+        averageUpdateTime: 0,
+        lastResetTime: Date.now()
+    };
+    
     // Bot configuration presets
     difficultyPresets = {
         novice: {
@@ -57,11 +65,32 @@ export class BotManager {
     update(gameTime) {
         if (!this.isEnabled) return;
 
-        // Update all bot controllers
+        const startTime = performance.now();
+
+        // Update all bot controllers with LOD (Level of Detail) optimization
         for (const bot of this.bots) {
-            if (bot.controller && bot.actor) {
-                bot.controller.update(gameTime);
+            if (bot.controller && bot.actor && !bot.actor.isDead) {
+                // Simple LOD: Update bots less frequently if they're not actively engaging
+                const shouldUpdate = bot.controller.state === 'engage' || 
+                                   (gameTime - bot.controller.lastUpdate) >= bot.controller.updateInterval;
+                
+                if (shouldUpdate) {
+                    bot.controller.update(gameTime);
+                }
             }
+        }
+
+        // Update performance stats
+        const endTime = performance.now();
+        const updateTime = endTime - startTime;
+        this.performanceStats.updateTime += updateTime;
+        this.performanceStats.totalUpdates++;
+        this.performanceStats.averageUpdateTime = 
+            this.performanceStats.updateTime / this.performanceStats.totalUpdates;
+
+        // Reset stats every 60 seconds to prevent overflow
+        if (gameTime - this.performanceStats.lastResetTime > 60000) {
+            this.resetPerformanceStats();
         }
     }
 
@@ -298,5 +327,82 @@ export class BotManager {
             actorType: bot.actorType,
             isBot: true
         }));
+    }
+
+    // Performance monitoring methods
+    resetPerformanceStats() {
+        this.performanceStats = {
+            totalUpdates: 0,
+            updateTime: 0,
+            averageUpdateTime: 0,
+            lastResetTime: Date.now()
+        };
+    }
+
+    getPerformanceStats() {
+        return {
+            ...this.performanceStats,
+            activeBots: this.bots.filter(bot => bot.actor && !bot.actor.isDead).length,
+            totalBots: this.bots.length,
+            isEnabled: this.isEnabled
+        };
+    }
+
+    // Advanced bot management
+    balanceTeams() {
+        const redBots = this.bots.filter(bot => bot.team === 'red');
+        const blueBots = this.bots.filter(bot => bot.team === 'blue');
+        
+        const difference = Math.abs(redBots.length - blueBots.length);
+        
+        if (difference > 1) {
+            const largerTeam = redBots.length > blueBots.length ? 'red' : 'blue';
+            const smallerTeam = largerTeam === 'red' ? 'blue' : 'red';
+            
+            // Move one bot from larger team to smaller team
+            const botsToMove = largerTeam === 'red' ? redBots : blueBots;
+            if (botsToMove.length > 0) {
+                const botToMove = botsToMove[Math.floor(Math.random() * botsToMove.length)];
+                botToMove.team = smallerTeam;
+                
+                if (botToMove.actor) {
+                    botToMove.actor.team = smallerTeam;
+                    
+                    // Respawn bot on new team
+                    this.removeBot(botToMove.id);
+                    this.addBot(smallerTeam, botToMove.difficulty, botToMove.personality, botToMove.weaponType);
+                }
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    // Difficulty scaling based on performance
+    adjustDifficultyBasedOnPerformance() {
+        // This could be enhanced with actual win/loss tracking
+        // For now, just randomly adjust some bot difficulties slightly
+        
+        const adjustableBots = this.bots.filter(bot => 
+            bot.difficulty !== 'elite' && Math.random() < 0.1 // 10% chance
+        );
+        
+        for (const bot of adjustableBots) {
+            const currentDifficulties = ['novice', 'intermediate', 'expert', 'elite'];
+            const currentIndex = currentDifficulties.indexOf(bot.difficulty);
+            
+            if (currentIndex !== -1 && currentIndex < currentDifficulties.length - 1) {
+                const newDifficulty = currentDifficulties[currentIndex + 1];
+                const difficultyConfig = this.difficultyPresets[newDifficulty];
+                
+                if (difficultyConfig) {
+                    Object.assign(bot.controller, difficultyConfig);
+                    bot.difficulty = newDifficulty;
+                    console.log(`Upgraded ${bot.name} to ${newDifficulty} difficulty`);
+                }
+            }
+        }
     }
 }
