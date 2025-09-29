@@ -106,12 +106,8 @@ export class ServerController {
         };
         this.levelRef.start();
 
-        // Enable and spawn bots after level is ready
         this.botManager.enable();
-        
-        // Add some test bots for demonstration
         this.addTestBots();
-        
         this.botManager.spawnAllBots();
 
         this.stage = this.stages[1];
@@ -136,7 +132,6 @@ export class ServerController {
             }
         });
         
-        // Respawn bots after reset
         this.botManager.spawnAllBots();
     }
 
@@ -169,7 +164,6 @@ export class ServerController {
     _formatGameState(state) {
         let actors = {};
         
-        // Add human players
         Object.keys(this.server.connections).forEach(id => {
             let connRef = this.server.connections[id];
             if ( connRef.actor ) {
@@ -177,7 +171,6 @@ export class ServerController {
             }
         });
         
-        // Add bots
         this.botManager.bots.forEach(bot => {
             if (bot.actor) {
                 actors[bot.id] = bot.actor.getSerializable();
@@ -214,7 +207,6 @@ export class ServerController {
             }
         });
         
-        // Send bot information to clients
         this.botManager.bots.forEach(bot => {
             connRef.send({
                 action : 'playerConnected',
@@ -252,7 +244,6 @@ export class ServerController {
     }
 
     handleTick() {
-        // Update bots
         if (this.botManager) {
             this.botManager.update(Date.now());
         }
@@ -354,9 +345,7 @@ export class ServerController {
         Vue.delete(this.server.connections, id);
     }
 
-    // Bot management methods
     addTestBots() {
-        // Add a couple of test bots to each team for demonstration
         this.botManager.addBot('red', 'intermediate', 'tactical');
         this.botManager.addBot('red', 'novice', 'aggressive');
         this.botManager.addBot('blue', 'intermediate', 'defensive');
@@ -366,7 +355,6 @@ export class ServerController {
     addBot(team, difficulty = 'intermediate', personality = null, weaponType = null) {
         const bot = this.botManager.addBot(team, difficulty, personality, weaponType);
         
-        // Notify all clients about the new bot
         if (bot && bot.actor) {
             this.server.send({
                 action : 'playerConnected',
@@ -397,7 +385,6 @@ export class ServerController {
     removeBot(botId) {
         const success = this.botManager.removeBot(botId);
         
-        // Notify all clients about bot removal
         if (success) {
             this.server.send({
                 action : 'playerDisconnected',
@@ -413,8 +400,6 @@ export class ServerController {
     getBotStats() {
         return this.botManager.getBotStats();
     }
-
-    // Configuration methods for bot settings
     setBotDifficulty(botId, difficulty) {
         const bot = this.botManager.bots.find(b => b.id === botId);
         if (bot && bot.controller) {

@@ -7,11 +7,10 @@ const weaponTypes = require('../../instances/weapon-type');
 
 export class BotManager {
     bots = [];
-    maxBots = 8; // 4 per team max
+    maxBots = 8;
     serverController = null;
     isEnabled = false;
     
-    // Performance monitoring
     performanceStats = {
         totalUpdates: 0,
         updateTime: 0,
@@ -19,7 +18,6 @@ export class BotManager {
         lastResetTime: Date.now()
     };
     
-    // Bot configuration presets
     difficultyPresets = {
         novice: {
             reactionTime: 0.8,
@@ -67,10 +65,8 @@ export class BotManager {
 
         const startTime = performance.now();
 
-        // Update all bot controllers with LOD (Level of Detail) optimization
         for (const bot of this.bots) {
             if (bot.controller && bot.actor && !bot.actor.isDead) {
-                // Simple LOD: Update bots less frequently if they're not actively engaging
                 const shouldUpdate = bot.controller.state === 'engage' || 
                                    (gameTime - bot.controller.lastUpdate) >= bot.controller.updateInterval;
                 
@@ -80,7 +76,6 @@ export class BotManager {
             }
         }
 
-        // Update performance stats
         const endTime = performance.now();
         const updateTime = endTime - startTime;
         this.performanceStats.updateTime += updateTime;
@@ -88,7 +83,6 @@ export class BotManager {
         this.performanceStats.averageUpdateTime = 
             this.performanceStats.updateTime / this.performanceStats.totalUpdates;
 
-        // Reset stats every 60 seconds to prevent overflow
         if (gameTime - this.performanceStats.lastResetTime > 60000) {
             this.resetPerformanceStats();
         }
@@ -100,40 +94,32 @@ export class BotManager {
             return null;
         }
 
-        // Count bots per team
         const teamBots = this.bots.filter(bot => bot.team === team);
         if (teamBots.length >= 4) {
             console.warn(`Maximum bots for team ${team} reached`);
             return null;
         }
 
-        // Select random personality if not specified
         if (!personality) {
             personality = this.personalityTypes[Math.floor(Math.random() * this.personalityTypes.length)];
         }
 
-        // Select weapon based on personality if not specified
         if (!weaponType) {
             weaponType = this.selectWeaponForPersonality(personality);
         }
 
-        // Get difficulty configuration
         const difficultyConfig = this.difficultyPresets[difficulty] || this.difficultyPresets.intermediate;
 
-        // Create bot configuration
         const botConfig = {
             ...difficultyConfig,
             personality: personality,
             teamwork: 0.8
         };
 
-        // Create bot controller
         const botController = new BotController(botConfig);
 
-        // Generate bot name
         const botName = this.generateBotName(personality, this.bots.length + 1);
 
-        // Create bot data structure
         const bot = {
             id: `bot_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             name: botName,
@@ -148,7 +134,6 @@ export class BotManager {
 
         this.bots.push(bot);
         
-        // Spawn the bot if server is ready
         if (this.serverController && this.serverController.levelRef) {
             this.spawnBot(bot);
         }
@@ -163,11 +148,9 @@ export class BotManager {
 
         const bot = this.bots[botIndex];
         
-        // Remove actor from game
         if (bot.actor && this.serverController && this.serverController.levelRef) {
             this.serverController.levelRef.removeActor(bot.actor);
             
-            // Remove from game controller actors list
             if (this.serverController.levelRef.logic) {
                 const actorIndex = this.serverController.levelRef.logic.actors.indexOf(bot.actor);
                 if (actorIndex !== -1) {
@@ -176,7 +159,6 @@ export class BotManager {
             }
         }
 
-        // Remove from bots array
         this.bots.splice(botIndex, 1);
         
         console.log(`Removed bot "${bot.name}"`);
@@ -184,7 +166,6 @@ export class BotManager {
     }
 
     removeAllBots() {
-        // Remove all bots
         while (this.bots.length > 0) {
             this.removeBot(this.bots[0].id);
         }
@@ -197,25 +178,19 @@ export class BotManager {
         }
 
         try {
-            // Create weapon
             const weapon = new Weapon(weaponTypes[bot.weaponType]);
             
-            // Create actor
             const actor = new Actor(actorTypes[bot.actorType], weapon);
             actor.characterName = bot.name;
             actor.team = bot.team;
             
-            // Set bot controller to control the actor
             bot.controller.setActor(actor);
             bot.actor = actor;
 
-            // Get spawn position for team
             const spawnPos = this.getSpawnPositionForTeam(bot.team);
             
-            // Spawn actor in level
             this.serverController.levelRef.spawnActor(actor, spawnPos.x, spawnPos.y);
             
-            // Add to game controller's actors list
             if (this.serverController.levelRef.logic) {
                 this.serverController.levelRef.logic.actors.push(actor);
             }
@@ -237,7 +212,6 @@ export class BotManager {
     }
 
     getSpawnPositionForTeam(team) {
-        // Get team spawn positions (simplified - could use actual spawn points from map)
         const basePositions = {
             red: { x: 100, y: 100 },
             blue: { x: 700, y: 500 }
@@ -245,7 +219,6 @@ export class BotManager {
 
         const basePos = basePositions[team] || basePositions.red;
         
-        // Add some randomization to avoid spawning on top of each other
         return {
             x: basePos.x + (Math.random() - 0.5) * 100,
             y: basePos.y + (Math.random() - 0.5) * 100
@@ -263,10 +236,8 @@ export class BotManager {
         const weapons = weaponPreferences[personality] || ['m4'];
         const availableWeapons = Object.keys(weaponTypes);
         
-        // Filter to only available weapons
         const validWeapons = weapons.filter(w => availableWeapons.includes(w));
         
-        // Return random valid weapon or fallback
         return validWeapons.length > 0 
             ? validWeapons[Math.floor(Math.random() * validWeapons.length)]
             : availableWeapons[0];
@@ -315,7 +286,6 @@ export class BotManager {
         };
     }
 
-    // Get bot data for network synchronization
     getSerializableBotsData() {
         return this.bots.map(bot => ({
             id: bot.id,
@@ -329,7 +299,6 @@ export class BotManager {
         }));
     }
 
-    // Performance monitoring methods
     resetPerformanceStats() {
         this.performanceStats = {
             totalUpdates: 0,
@@ -348,7 +317,6 @@ export class BotManager {
         };
     }
 
-    // Advanced bot management
     balanceTeams() {
         const redBots = this.bots.filter(bot => bot.team === 'red');
         const blueBots = this.bots.filter(bot => bot.team === 'blue');
@@ -359,7 +327,6 @@ export class BotManager {
             const largerTeam = redBots.length > blueBots.length ? 'red' : 'blue';
             const smallerTeam = largerTeam === 'red' ? 'blue' : 'red';
             
-            // Move one bot from larger team to smaller team
             const botsToMove = largerTeam === 'red' ? redBots : blueBots;
             if (botsToMove.length > 0) {
                 const botToMove = botsToMove[Math.floor(Math.random() * botsToMove.length)];
@@ -368,7 +335,6 @@ export class BotManager {
                 if (botToMove.actor) {
                     botToMove.actor.team = smallerTeam;
                     
-                    // Respawn bot on new team
                     this.removeBot(botToMove.id);
                     this.addBot(smallerTeam, botToMove.difficulty, botToMove.personality, botToMove.weaponType);
                 }
@@ -380,13 +346,9 @@ export class BotManager {
         return false;
     }
 
-    // Difficulty scaling based on performance
     adjustDifficultyBasedOnPerformance() {
-        // This could be enhanced with actual win/loss tracking
-        // For now, just randomly adjust some bot difficulties slightly
-        
         const adjustableBots = this.bots.filter(bot => 
-            bot.difficulty !== 'elite' && Math.random() < 0.1 // 10% chance
+            bot.difficulty !== 'elite' && Math.random() < 0.1
         );
         
         for (const bot of adjustableBots) {
