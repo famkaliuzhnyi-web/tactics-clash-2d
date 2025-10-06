@@ -35,7 +35,10 @@ exports.cssLoaders = function (options) {
         // Extract CSS when that option is specified
         // (which is the case during production build)
         if ( options.extract ) {
-            return ExtractTextPlugin.extract('vue-style-loader', sourceLoader)
+            return ExtractTextPlugin.extract({
+                fallback: 'vue-style-loader',
+                use: sourceLoader
+            })
         } else {
             return ['vue-style-loader', sourceLoader].join('!')
         }
@@ -46,8 +49,8 @@ exports.cssLoaders = function (options) {
         css     : generateLoaders(['css']),
         postcss : generateLoaders(['css']),
         less    : generateLoaders(['css', 'less']),
-        sass    : generateLoaders(['css', 'sass?indentedSyntax']),
-        scss    : generateLoaders(['css', 'sass?includePaths[]=' + [root('src', 'app_styles')]]),
+        sass    : generateLoaders(['css', 'sass?indentedSyntax&implementation=sass']),
+        scss    : generateLoaders(['css', 'sass?includePaths[]=' + [root('src', 'app_styles')] + '&implementation=sass']),
         stylus  : generateLoaders(['css', 'stylus']),
         styl    : generateLoaders(['css', 'stylus'])
     }
@@ -60,8 +63,8 @@ exports.styleLoaders = function (options) {
     for (var extension in loaders) {
         var loader = loaders[extension]
         output.push({
-            test   : new RegExp('\\.' + extension + '$'),
-            loader : loader
+            test   : new RegExp('\\\\.' + extension + '$'),
+            use : loader
         })
     }
     return output
